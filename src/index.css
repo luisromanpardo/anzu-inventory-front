@@ -1,0 +1,156 @@
+@import "tailwindcss";
+
+/* Force Tailwind v4 source scanning */
+@source "../index.html";
+@source "./**/*.{js,ts,jsx,tsx}";
+
+/* ========== CUSTOM COLORS ========== */
+@layer utilities {
+  .bg-canvas { background-color: #ffffff; }
+  .bg-ink-black { background-color: #000000; }
+  .bg-subtle-gray { background-color: #ebebeb; }
+  .bg-muted-text { background-color: #707070; }
+  .bg-soft-gray { background-color: #c9cbcc; }
+  .bg-placeholder-text { background-color: #7b7b7b; }
+  .bg-shop-violet { background-color: #5433eb; }
+  .bg-violet-shadow { background-color: #c0b5f3; }
+  .bg-red-50 { background-color: #fef2f2; }
+  .bg-red-500 { background-color: #ef4444; }
+  .bg-green-50 { background-color: #f0fdf4; }
+  .bg-green-600 { background-color: #16a34a; }
+  .bg-blue-50 { background-color: #eff6ff; }
+  .bg-blue-600 { background-color: #2563eb; }
+  .bg-yellow-50 { background-color: #fefce8; }
+  .bg-yellow-200 { background-color: #fef08a; }
+  .bg-yellow-800 { background-color: #854d0e; }
+
+  .text-canvas { color: #ffffff; }
+  .text-ink-black { color: #000000; }
+  .text-subtle-gray { color: #ebebeb; }
+  .text-muted-text { color: #707070; }
+  .text-soft-gray { color: #c9cbcc; }
+  .text-placeholder-text { color: #7b7b7b; }
+  .text-shop-violet { color: #5433eb; }
+  .text-violet-shadow { color: #c0b5f3; }
+  .text-red-600 { color: #dc2626; }
+  .text-red-800 { color: #991b1b; }
+  .text-green-500 { color: #22c55e; }
+  .text-green-600 { color: #16a34a; }
+  .text-blue-600 { color: #2563eb; }
+  .text-yellow-800 { color: #854d0e; }
+
+  .border-canvas { border-color: #ffffff; }
+  .border-ink-black { border-color: #000000; }
+  .border-subtle-gray { border-color: #ebebeb; }
+  .border-muted-text { border-color: #707070; }
+  .border-soft-gray { border-color: #c9cbcc; }
+  .border-placeholder-text { border-color: #7b7b7b; }
+  .border-shop-violet { border-color: #5433eb; }
+  .border-violet-shadow { border-color: #c0b5f3; }
+  .border-red-500 { border-color: #ef4444; }
+  .border-green-200 { border-color: #bbf7d0; }
+  .border-green-500 { border-color: #22c55e; }
+  .border-blue-200 { border-color: #bfdbfe; }
+  .border-blue-500 { border-color: #3b82f6; }
+  .border-yellow-200 { border-color: #fef08a; }
+  .border-red-200 { border-color: #fecaca; }
+}
+
+/* ========== TYPOGRAPHY ========== */
+@layer utilities {
+  .text-caption { font-size: 11px; line-height: 1.33; }
+  .text-body-sm { font-size: 12px; line-height: 1.33; }
+  .text-body { font-size: 14px; line-height: 1.33; }
+  .text-body-lg { font-size: 16px; line-height: 1.33; }
+}
+
+/* ========== SHADOWS ========== */
+@layer utilities {
+  .shadow-lg { box-shadow: 0px 4px 24px 0px rgba(69, 36, 219, 0.34); }
+  .shadow-\[rgba\(69\2c36\2c219\2c0\.34\)_0px_4px_24px_0px\] { box-shadow: rgba(69,36,219,0.34) 0px 4px 24px 0px; }
+  .hover\:shadow-lg:hover { box-shadow: 0px 4px 24px 0px rgba(69, 36, 219, 0.34); }
+}
+
+/* ========== BORDER RADIUS ========== */
+@layer utilities {
+  .rounded-\[11\.4046px\] { border-radius: 11.4046px; }
+  .rounded-\[22\.8092px\] { border-radius: 22.8092px; }
+  .rounded-\[28px\] { border-radius: 28px; }
+  .rounded-\[30px\] { border-radius: 30px; }
+  .rounded-\[9999px\] { border-radius: 9999px; }
+  .rounded-\[10000px\] { border-radius: 10000px; }
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fadeInUp 400ms ease-out;
+  }
+
+  .animate-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  .animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+  }
+}
+
+/* ========== BASE STYLES ========== */
+@layer base {
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #ffffff;
+    color: #000000;
+    font-size: 14px;
+    line-height: 1.33;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+}
