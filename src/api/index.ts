@@ -1,4 +1,6 @@
 import axios, { type AxiosInstance, type InternalAxiosRequestConfig } from 'axios';
+import { toBackendCondition, fromBackendCondition } from '../lib/conditions';
+import type { Condition } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api/v1';
 
@@ -139,18 +141,30 @@ export const homeApi = {
 export const inventoryApi = {
   getMyInventory: async () => {
     const response = await api.get('/inventory/me');
-    return response.data;
+    // Convertir condiciones del backend al formato del frontend
+    return response.data.map((item: { condicion: string; card_id: number; [key: string]: unknown }) => ({
+      ...item,
+      card_id: String(item.card_id), // Guardar como string para consistencia en frontend
+      condicion: fromBackendCondition(item.condicion),
+    }));
   },
 
   addItem: async (data: {
-    card_id: string;
+    card_id: number;
     cantidad: number;
-    condicion: string;
+    condicion: Condition;
     idioma: string;
     edicion?: string;
     notas?: string;
   }) => {
-    const response = await api.post('/inventory', data);
+    const response = await api.post('/inventory', {
+      card_id: data.card_id,
+      cantidad: data.cantidad,
+      condicion: toBackendCondition(data.condicion),
+      idioma: data.idioma,
+      edicion: data.edicion || '',
+      notas: data.notas || '',
+    });
     return response.data;
   },
 
@@ -158,13 +172,17 @@ export const inventoryApi = {
     id: string,
     data: {
       cantidad?: number;
-      condicion?: string;
+      condicion?: Condition;
       idioma?: string;
       edicion?: string;
       notas?: string;
     }
   ) => {
-    const response = await api.patch(`/inventory/${id}`, data);
+    const updateData: Record<string, unknown> = { ...data };
+    if (updateData.condicion !== undefined) {
+      updateData.condicion = toBackendCondition(updateData.condicion as Condition);
+    }
+    const response = await api.patch(`/inventory/${id}`, updateData);
     return response.data;
   },
 

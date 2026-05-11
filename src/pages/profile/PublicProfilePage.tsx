@@ -4,6 +4,7 @@ import { usersApi } from '../../api';
 import { useAuthStore } from '../../stores';
 import { Button } from '../../components/ui';
 import type { PublicProfile } from '../../types';
+import { formatBackendCondition } from '../../lib/conditions';
 import { ArrowLeft, Package, Calendar } from 'lucide-react';
 
 export function PublicProfilePage() {
@@ -166,7 +167,7 @@ export function PublicProfilePage() {
                 </div>
                 <h3 className="text-body font-medium text-ink-black line-clamp-1">{item.card?.name || 'Unknown'}</h3>
                 <p className="text-caption text-muted-text">
-                  {item.cantidad}x • {item.condicion.replace('_', ' ')} • {item.idioma}
+                  {item.cantidad}x • {formatBackendCondition(item.condicion)} • {item.idioma}
                 </p>
               </div>
             ))}

@@ -1,13 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Layout } from './components/layout';
-import { LoginPage, RegisterPage } from './pages/auth';
-import { HomePage } from './pages/home';
-import { CardsPage, CardDetailPage } from './pages/cards';
-import { InventoryPage } from './pages/inventory';
-import { ProfilePage, PublicProfilePage } from './pages/profile';
-import { AdminPage } from './pages/admin';
+import { useEffect } from "react";
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Layout } from "./components/layout";
+import { LoginPage, RegisterPage } from "./pages/auth";
+import { HomePage } from "./pages/home";
+import { CardsPage, CardDetailPage } from "./pages/cards";
+import { InventoryPage } from "./pages/inventory";
+import { ProfilePage, PublicProfilePage } from "./pages/profile";
+import { AdminPage } from "./pages/admin";
+import { useAuthStore } from "./stores/authStore";
 
 function App() {
+  const loadFromStorage = useAuthStore((state) => state.loadFromStorage);
+
+  // Restaurar sesión al cargar la app
+  useEffect(() => {
+    loadFromStorage();
+  }, [loadFromStorage]);
+
   return (
     <BrowserRouter>
       <Routes>

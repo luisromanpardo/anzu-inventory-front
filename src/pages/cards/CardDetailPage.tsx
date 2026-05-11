@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { cardsApi } from '../../api';
+import { cardsApi, inventoryApi } from '../../api';
 import { useAuthStore, useUIStore } from '../../stores';
 import { CardImage, Button, Modal } from '../../components/ui';
 import type { CardWithOwners, Condition, Language } from '../../types';
+import { formatBackendCondition } from '../../lib/conditions';
 import { ArrowLeft, Plus, MessageCircle, Users } from 'lucide-react';
 
 const CONDITIONS: Condition[] = ['mint', 'near_mint', 'excellent', 'good', 'light_plaid', 'plaid', 'poor'];
@@ -24,6 +25,7 @@ export function CardDetailPage() {
   const [quantity, setQuantity] = useState(1);
   const [condition, setCondition] = useState<Condition>('near_mint');
   const [language, setLanguage] = useState<Language>('english');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchCardData = async () => {
@@ -44,11 +46,22 @@ export function CardDetailPage() {
   const handleAddToInventory = async () => {
     if (!id) return;
     try {
-      // Call API to add item
+      setIsSubmitting(true);
+      await inventoryApi.addItem({
+        card_id: parseInt(id, 10),
+        cantidad: quantity,
+        condicion: condition,
+        idioma: language,
+      });
       addToast({ message: 'Card added to your inventory!', type: 'success' });
       setIsAddModalOpen(false);
+      setQuantity(1);
+      setCondition('near_mint');
+      setLanguage('english');
     } catch (err) {
       addToast({ message: 'Failed to add card to inventory', type: 'error' });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -167,9 +180,9 @@ export function CardDetailPage() {
                   >
                     <div>
                       <p className="text-body font-medium text-ink-black">{owner.username}</p>
-                      <p className="text-caption text-muted-text">
-                        {owner.cantidad}x • {owner.condicion.replace('_', ' ')} • {owner.idioma}
-                      </p>
+<p className="text-caption text-muted-text">
+                          {owner.cantidad}x • {formatBackendCondition(owner.condicion)} • {owner.idioma}
+                        </p>
                     </div>
                     <div className="flex gap-2">
                       {owner.instagram && (
@@ -263,8 +276,9 @@ export function CardDetailPage() {
             variant="primary"
             onClick={handleAddToInventory}
             className="w-full text-white"
+            disabled={isSubmitting}
           >
-            Add to Inventory
+            {isSubmitting ? 'Adding...' : 'Add to Inventory'}
           </Button>
         </div>
       </Modal>

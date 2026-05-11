@@ -80,19 +80,19 @@ export interface InventoryItem {
 }
 
 export interface AddInventoryItem {
-  card_id: string;
+  card_id: number;
   cantidad: number;
   condicion: Condition;
-  idioma: Language;
-  edicion?: Edition;
+  idioma: string;
+  edicion?: string;
   notas?: string;
 }
 
 export interface UpdateInventoryItem {
   cantidad?: number;
   condicion?: Condition;
-  idioma?: Language;
-  edicion?: Edition;
+  idioma?: string;
+  edicion?: string;
   notas?: string;
 }
 
@@ -100,8 +100,8 @@ export interface UpdateInventoryItem {
 export interface CardOwner {
   username: string;
   cantidad: number;
-  condicion: Condition;
-  idioma: Language;
+  condicion: string;
+  idioma: string;
   instagram?: string;
   twitter?: string;
   discord?: string;

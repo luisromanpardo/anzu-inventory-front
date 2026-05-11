@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useInventoryStore, useAuthStore, useUIStore } from '../../stores';
 import { Button, Modal } from '../../components/ui';
 import type { InventoryItem, Condition, Language, Edition } from '../../types';
+import { fromBackendCondition } from '../../lib/conditions';
 import { Plus, Edit2, Trash2, Search } from 'lucide-react';
 
 const CONDITIONS: Condition[] = ['mint', 'near_mint', 'excellent', 'good', 'light_plaid', 'plaid', 'poor'];
@@ -59,9 +60,9 @@ export function InventoryPage() {
   const handleOpenEditModal = (item: InventoryItem) => {
     setEditingItem(item);
     setEditQuantity(item.cantidad);
-    setEditCondition(item.condicion);
-    setEditLanguage(item.idioma);
-    setEditEdition(item.edicion || 'unlimited');
+    setEditCondition(fromBackendCondition(item.condicion) as Condition);
+    setEditLanguage(item.idioma as Language);
+    setEditEdition(item.edicion as Edition || 'unlimited');
     setEditNotes(item.notas || '');
   };
 
@@ -69,7 +70,7 @@ export function InventoryPage() {
     if (!selectedCardId) return;
     try {
       await addItem({
-        card_id: selectedCardId,
+        card_id: parseInt(selectedCardId, 10),
         cantidad: addQuantity,
         condicion: addCondition,
         idioma: addLanguage,

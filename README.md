@@ -1,73 +1,89 @@
-# React + TypeScript + Vite
+# Anzu Inventory Front
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend para gestion de inventario de cartas Yu-Gi-Oh!
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React 19 + TypeScript
+- Vite
+- Zustand (state management)
+- TailwindCSS
+- React Router v7
+- Shadcn/ui
 
-## React Compiler
+## Variables de Entorno
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Crear un archivo `.env` en la raiz del proyecto:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=http://localhost:3000/api/v1
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Para deploy en produccion, apuntar a la URL de la API:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_API_URL=https://api.tudominio.com/api/v1
 ```
+
+## Scripts
+
+```bash
+npm install          # Instalar dependencias
+npm run dev          # Desarrollo (localhost:5173)
+npm run build        # Build para produccion
+npm run lint         # Linting con ESLint
+npm run preview      # Preview del build
+```
+
+## Estructura del Proyecto
+
+```
+src/
+├── api/             # Configuracion de Axios y endpoints
+├── components/       # Componentes reutilizables
+│   ├── ui/          # Componentes base (shadcn/ui)
+│   └── layout/      # Layout principal
+├── pages/           # Paginas/rutas de la app
+├── stores/          # Estado global con Zustand
+├── types/           # Tipos TypeScript
+└── lib/             # Utilidades
+```
+
+## Condiciones de Inventario
+
+El backend utiliza codigos cortos para las condiciones de las cartas:
+
+| Codigo | Descripcion |
+|--------|-------------|
+| NM | Near Mint |
+| LP | Light Plaid |
+| MP | Moderate Plaid |
+| HP | Heavy Plaid |
+
+El frontend traduce internamente a estos codigos al sincronizar con el backend.
+
+## API Endpoints
+
+- `GET /cards/search` - Buscar cartas
+- `GET /cards/:id` - Detalle de carta
+- `GET /home` - Cartas populares
+- `GET /inventory/me` - Mi inventario
+- `POST /inventory` - Agregar carta al inventario
+- `PATCH /inventory/:id` - Actualizar item
+- `DELETE /inventory/:id` - Eliminar item
+
+## Desarrollo
+
+Para correr el proyecto en modo desarrollo:
+
+```bash
+npm run dev
+```
+
+La app estara disponible en `http://localhost:5173`
+
+## Notas
+
+- El proyecto usa ESLint con TypeScript checking
+- La autenticacion se maneja con JWT (access + refresh tokens)
+- El estado de autenticacion se gestiona en `stores/authStore.ts`
