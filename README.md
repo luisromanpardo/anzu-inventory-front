@@ -1,6 +1,6 @@
 # Anzu Inventory Front
 
-Frontend para gestion de inventario de cartas Yu-Gi-Oh!
+Frontend para gestión de inventario de cartas Yu-Gi-Oh!
 
 ## Stack
 
@@ -10,16 +10,17 @@ Frontend para gestion de inventario de cartas Yu-Gi-Oh!
 - TailwindCSS
 - React Router v7
 - Shadcn/ui
+- Docker + Nginx
 
 ## Variables de Entorno
 
-Crear un archivo `.env` en la raiz del proyecto:
+Crear un archivo `.env` en la raíz del proyecto:
 
 ```env
 VITE_API_URL=http://localhost:3000/api/v1
 ```
 
-Para deploy en produccion, apuntar a la URL de la API:
+Para deploy en producción, apuntar a la URL de la API:
 
 ```env
 VITE_API_URL=https://api.tudominio.com/api/v1
@@ -30,37 +31,79 @@ VITE_API_URL=https://api.tudominio.com/api/v1
 ```bash
 npm install          # Instalar dependencias
 npm run dev          # Desarrollo (localhost:5173)
-npm run build        # Build para produccion
+npm run build        # Build para producción
 npm run lint         # Linting con ESLint
 npm run preview      # Preview del build
+```
+
+## Docker
+
+### Build y run
+
+```bash
+# Build de la imagen
+docker build -t anzu-inventory-front .
+
+# Run del contenedor
+docker run -d -p 80:80 \
+  -e VITE_API_URL=http://localhost:3000/api/v1 \
+  --name anzu-front \
+  anzu-inventory-front
+```
+
+### Build multi-stage con ARGs
+
+```bash
+docker build -t anzu-inventory-front \
+  --build-arg VITE_API_URL=https://api.tudominio.com/api/v1 \
+  .
+```
+
+### Docker Compose (con backend)
+
+```yaml
+version: '3.8'
+services:
+  frontend:
+    build: .
+    ports:
+      - "80:80"
+    environment:
+      - VITE_API_URL=http://backend:3000/api/v1
+    depends_on:
+      - backend
+
+  backend:
+    # tu servicio de backend
 ```
 
 ## Estructura del Proyecto
 
 ```
 src/
-├── api/             # Configuracion de Axios y endpoints
-├── components/       # Componentes reutilizables
+├── api/             # Configuración de Axios y endpoints
+├── components/      # Componentes reutilizables
 │   ├── ui/          # Componentes base (shadcn/ui)
 │   └── layout/      # Layout principal
-├── pages/           # Paginas/rutas de la app
+├── pages/           # Páginas/rutas de la app
 ├── stores/          # Estado global con Zustand
 ├── types/           # Tipos TypeScript
-└── lib/             # Utilidades
+└── lib/             # Utilidades (conditions mapper, etc.)
 ```
 
 ## Condiciones de Inventario
 
-El backend utiliza codigos cortos para las condiciones de las cartas:
+El backend utiliza strings legibles para las condiciones:
 
-| Codigo | Descripcion |
-|--------|-------------|
-| NM | Near Mint |
-| LP | Light Plaid |
-| MP | Moderate Plaid |
-| HP | Heavy Plaid |
+| Frontend | Backend |
+|----------|---------|
+| mint | Mint |
+| near_mint | Near Mint |
+| light_plaid | Light Play |
+| excellent/good/plaid | Moderately Played |
+| poor | Damaged |
 
-El frontend traduce internamente a estos codigos al sincronizar con el backend.
+El frontend convierte internamente entre formatos.
 
 ## API Endpoints
 
@@ -80,10 +123,11 @@ Para correr el proyecto en modo desarrollo:
 npm run dev
 ```
 
-La app estara disponible en `http://localhost:5173`
+La app estará disponible en `http://localhost:5173`
 
 ## Notas
 
 - El proyecto usa ESLint con TypeScript checking
-- La autenticacion se maneja con JWT (access + refresh tokens)
-- El estado de autenticacion se gestiona en `stores/authStore.ts`
+- La autenticación se maneja con JWT (access + refresh tokens)
+- El estado de autenticación se gestiona en `stores/authStore.ts`
+- Session restoration al recargar (llama a `/auth/refresh` + `/users/me`)
